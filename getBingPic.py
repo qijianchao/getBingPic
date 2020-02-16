@@ -4,6 +4,7 @@ __author__='qijianchao@163.com'
 import urllib.request
 import urllib.parse
 import os
+import ssl
 from xml.dom.minidom import parse
 import xml.dom.minidom
 
@@ -11,12 +12,13 @@ import xml.dom.minidom
 baseUrl = "https://cn.bing.com/HPImageArchive.aspx"
 idx = "0"
 n = "7"
-bingUrl = baseUrl + '?idx=' + idx + '&n=' + n
+bingUrl = baseUrl + '?format=xml&idx=' + idx + '&n=' + n
 savePath = "/Users/qjc/OneDrive/图片/Bing程序抓取"
 #savePath = "/Users/qjc/Documents/PythonStudy"
 picNotes = "picNotes.txt"
 
 #通过url获取bing图片的xml信息，并解析xml信息，解析后逐个存放成1920x1080和1920x1200两种格式，并记录信息到picNotes文件中
+ssl._create_default_https_context = ssl._create_unverified_context
 page = urllib.request.urlopen(bingUrl)
 html = page.read()
 xmlStr = html.decode('utf-8')
@@ -47,8 +49,7 @@ for image in images:
         if not os.path.isfile(savePath + '/' + picNotes):
             picFile = open(savePath + '/' + picNotes,'w')
         else :
-            picFile = open(savePath + '/' + picNotes,'r+')
-            picFile.read() # 不加入这句文件指针会在开头，会覆盖文本信息
+            picFile = open(savePath + '/' + picNotes,'a')
         picFile.write('\n开始日期：' + startdate)
         picFile.write('\n完整日期：' + fullstartdate)
         picFile.write('\n结束日期：' + enddate)
